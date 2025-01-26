@@ -1,0 +1,261 @@
+body {
+    background-color: #fff;
+    font-family: monospace;
+}
+
+.signupcont {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin: 48px auto;
+    border: 2px solid #000;
+    background: #fff;
+    display: flex;
+    min-height: 600px; 
+    max-height: 800px; 
+}
+
+.grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Make sure content appears above grid */
+.left, .right {
+    position: relative;
+    z-index: 2;
+}
+
+.left {
+    width: 50%;
+    border-right: 2px solid #000;
+    display: flex;
+    align-items: center;
+}
+
+.imageContainer {
+    position: relative;
+    border: 2px solid #000;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.imageContainer img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.right {
+    width: 50%;
+    padding: 48px;
+}
+
+.heading {
+    margin-bottom: 48px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 24px;
+}
+
+.heading h1 {
+    font-size: 42px;
+    margin-bottom: 24px;
+    font-family: monospace;
+}
+
+.subheading {
+    font-family: monospace;
+}
+
+.subheading h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.formwrap {
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.formwrap label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.formwrap input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #000;
+    background: #fff;
+    font-family: monospace;
+    box-sizing: border-box;
+}
+
+.formwrap input:focus {
+    outline: none;
+    background: #000;
+    color: #fff;
+}
+
+.checkboxwrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.checkboxwrap input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+}
+
+.buttonwrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.buttonwrap button {
+    width: 100%;
+    padding: 16px;
+    background: #fff;
+    border: 2px solid #000;
+    font-family: monospace;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.buttonwrap button:hover {
+    background: #000;
+    color: #fff;
+}
+
+.link {
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+    font-family: monospace;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Add media query for smaller desktops */
+@media screen and (max-width: 1200px) {
+    .signupcont {
+        width: 80%;
+        height: 80vh;
+        margin: 24px auto; /* Reduced margin */
+    }
+
+    .right {
+        padding: 24px; /* reduced padding */
+    }
+
+    .heading {
+        margin-bottom: 24px; /* Smaller margin */
+        padding-bottom: 16px; /* Reduced padding */
+    }
+
+    .heading h1 {
+        font-size: 28px; /* smaller font */
+        margin-bottom: 12px;
+    }
+
+    .subheading h3 {
+        font-size: 16px;
+    }
+
+    .formGrid {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .formwrap {
+        margin-bottom: 12px;
+    }
+
+    .formwrap input {
+        padding: 8px; /* Smaller input padding */
+    }
+
+    .buttonwrap {
+        gap: 12px;
+    }
+
+    .buttonwrap button {
+        padding: 12px; /* Smaller button padding */
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .signupcont {
+        width: 90%;
+        height: 65vh; /* shorter height */
+        margin: 16px auto;
+    }
+
+    .right {
+        padding: 20px;
+    }
+
+    .heading h1 {
+        font-size: 24px;
+    }
+}
+
+/* Add media query for tablets and mobile */
+@media screen and (max-width: 768px) {
+    .signupcont {
+        width: 100%;
+        margin: 0;
+        border: none;
+        border-top: 2px solid #000;
+    }
+
+    .left {
+        display: none;
+    }
+
+    .right {
+        width: 100%;
+        padding: 24px;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .heading h1 {
+        font-size: 32px;
+    }
+}

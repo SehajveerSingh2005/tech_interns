@@ -1,0 +1,50 @@
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: row;
+  position: fixed;
+  z-index: 1000;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  padding: 2rem 4rem;
+  width: 100%;
+  /* max-width: 1400px; */
+  margin: 0 auto;
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+}
+
+.navLeft {
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.navRight {
+  display: flex;
+  gap: 3rem;
+}
+
+.navItem {
+  cursor: pointer;
+  position: relative;
+  transition: opacity 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navItem:hover {
+  opacity: 0.7;
+}
+
+.navLeft a {
+  text-decoration: none;
+  color: inherit;
+}
