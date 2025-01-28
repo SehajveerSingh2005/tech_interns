@@ -9,72 +9,7 @@ const Companies = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
 
-  const companies = [
-    {
-      id: 1,
-      name: 'Infosys',
-      logo: '/infosys-logo.svg',
-      industry: 'Tech',
-      location: 'Bangalore, India',
-      internshipCount: 5,
-    },
-    {
-      id: 2,
-      name: 'Tata Consultancy Services (TCS)',
-      logo: '/tcs-logo.svg',
-      industry: 'Tech',
-      location: 'Mumbai, India',
-      internshipCount: 8,
-    },
-    {
-      id: 3,
-      name: 'Wipro',
-      logo: '/wipro-logo.svg',
-      industry: 'Tech',
-      location: 'Bangalore, India',
-      internshipCount: 6,
-    },
-    {
-      id: 4,
-      name: 'Flipkart',
-      logo: '/flipkart-logo.svg',
-      industry: 'E-commerce',
-      location: 'Bangalore, India',
-      internshipCount: 3,
-    },
-    {
-      id: 5,
-      name: 'Zomato',
-      logo: '/zomato-logo.svg',
-      industry: 'Food Delivery',
-      location: 'Gurgaon, India',
-      internshipCount: 4,
-    },
-    {
-      id: 6,
-      name: 'Ola',
-      logo: '/ola-logo.svg',
-      industry: 'Transportation',
-      location: 'Bangalore, India',
-      internshipCount: 2,
-    },
-    {
-      id: 7,
-      name: 'Byju’s',
-      logo: '/byjus-logo.svg',
-      industry: 'EdTech',
-      location: 'Bangalore, India',
-      internshipCount: 7,
-    },
-    {
-      id: 8,
-      name: 'Reliance Jio',
-      logo: '/jio-logo.svg',
-      industry: 'Telecom',
-      location: 'Mumbai, India',
-      internshipCount: 5,
-    },
-  ];
+  const companies = [];
 
   // Filter and search logic
   const filteredCompanies = companies

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './opportunites.module.css';
 import Navbar from '../../components/navbar/navbar';
 import OpportunityModal from '../../components/home/OpportunityModal';
-import axios from 'axios'; // Replace with your data fetching method (e.g., Firestore, axios)
+import axios from 'axios';
 
 const Opportunities = () => {
   const [sortBy, setSortBy] = useState('newest');
@@ -13,6 +13,8 @@ const Opportunities = () => {
     stipendRange: 'all',
     duration: 'all',
   });
+  const [searchQuery, setSearchQuery] = useState(''); //search query
+
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [internships, setInternships] = useState([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true); // Track loading state
@@ -31,11 +33,10 @@ const Opportunities = () => {
   useEffect(() => {
     const fetchInternships = async () => {
       try {
-        // Replace this with your actual data fetching method (API, Firestore, etc.)
-        const response = await axios.get('http://localhost:5000/api/offers'); // Example with axios
-        console.log('Fetched internships:', response.data);
+
+        const response = await axios.get('http://localhost:5000/api/offers'); 
         if (Array.isArray(response.data)) {
-          setInternships(response.data); // Ensure data is an array
+          setInternships(response.data); 
         } else {
           console.error('Fetched data is not an array!');
         }
@@ -68,6 +69,46 @@ const Opportunities = () => {
     }
   };
 
+  function parseDuration(durationStr) {
+
+    const match = durationStr.match(/(\d+)\s*(\w+)/);
+    if (!match) return null; 
+
+    const value = parseInt(match[1], 10); 
+    const unit = match[2].toLowerCase();
+
+    // Convert the value to days
+    switch (unit) {
+        case 'month':
+        case 'months':
+            return value * 30; 
+        case 'week':
+        case 'weeks':
+            return value * 7; 
+        case 'day':
+        case 'days':
+            return value;
+        case 'year':
+        case 'years':
+            return value * 365;
+        default:
+            throw new Error(`Unknown duration unit: ${unit}`);
+    }
+}
+
+
+  const checkDuration = (duration, range) =>{
+    const ParsedDurationValue = parseDuration(duration);
+    switch(range){
+      case '3 months':
+        return ParsedDurationValue <= 90;
+      case '6 months':
+        return ParsedDurationValue <= 180;
+      default:
+        return true;
+    }
+  }
+
   // Filter internships based on selected filters
   const filteredInternships = internships
     .filter((internship) => {
@@ -76,7 +117,8 @@ const Opportunities = () => {
         (filterBy.location === 'all' || internship.location.toLowerCase() === filterBy.location) &&
         (filterBy.type === 'all' || internship.type.toLowerCase() === filterBy.type) &&
         (filterBy.stipendRange === 'all' || checkStipendRange(internship.stipend, filterBy.stipendRange)) &&
-        (filterBy.duration === 'all' || internship.duration === filterBy.duration)
+        (filterBy.duration === 'all' || checkDuration(internship.duration,filterBy.duration)) &&
+        (searchQuery === '' || internship.role.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     })
     .sort((a, b) => {
@@ -110,7 +152,7 @@ const Opportunities = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading indicator while data is being fetched
+    return <div>Loading...</div>;
   }
 
   return (
@@ -141,8 +183,39 @@ const Opportunities = () => {
                   <option value="product">Product</option>
                 </select>
               </div>
-              {/* Other filter dropdowns go here... */}
+              <div className={styles.selectWrapper}>
+                <select
+                 value={filterBy.type}
+                 onChange={(e) => setFilterBy({...filterBy, type: e.target.value})}
+                 className={styles.select}
+                >
+                  <option value='all'>All Types</option>
+                  <option value='full-time'>Full-time</option>
+                  <option value='part-time'>Part-time</option>
+                </select>
+              </div>
+              <div className={styles.selectWrapper}>
+                <select
+                value={filterBy.duration}
+                onChange={(e) => setFilterBy({...filterBy, duration: e.target.value})}
+                className={styles.select}
+                >
+                  <option value='all'>All Durations</option>
+                  <option value='3 months'>3 months</option>
+                  <option value='6 months'>6 months</option>
+                </select>
+              </div>
             </div>
+
+            <div className={styles.searchGroup}>
+                <input
+                  type="text"
+                  placeholder="Search companies..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={styles.searchInput}
+                />
+            +</div>
 
             <div className={styles.filterGroup}>
               <label>SORT BY:</label>
