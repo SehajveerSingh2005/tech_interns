@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import styles from './opportunites.module.css';
 import Navbar from '../../components/navbar/navbar';
 import OpportunityModal from '../../components/home/OpportunityModal';
-import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+
 
 const Opportunities = () => {
+  const { isLoggedIn } = useContext(AuthContext); // user should be accessible to identify the applicant
+  
   const [sortBy, setSortBy] = useState('newest');
   const [filterBy, setFilterBy] = useState({
     department: 'all',
@@ -14,26 +19,22 @@ const Opportunities = () => {
     duration: 'all',
   });
   const [searchQuery, setSearchQuery] = useState(''); //search query
-
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [internships, setInternships] = useState([]); // Initialize as an empty array
   const [loading, setLoading] = useState(true); // Track loading state
 
 
-    // Format date to 'DD-MM-YYYY'
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0'); // Ensures 2 digits
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-      const year = date.getFullYear();
-  
-      return `${day}-${month}-${year}`;
-    };
-  // Fetch internships data
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Ensures 2 digits
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   useEffect(() => {
     const fetchInternships = async () => {
       try {
-
         const response = await axios.get('http://localhost:5000/api/offers'); 
         if (Array.isArray(response.data)) {
           setInternships(response.data); 
@@ -50,92 +51,6 @@ const Opportunities = () => {
     fetchInternships();
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
-  // Check if stipend is in the selected range
-  const parseStipend = (stipend) => {
-    return parseInt(stipend.replace(/[^0-9]/g, ''), 10);
-  };
-
-  const checkStipendRange = (stipend, range) => {
-    const stipendValue = parseStipend(stipend);
-    switch (range) {
-      case '20k-50k':
-        return stipendValue >= 20000 && stipendValue <= 50000;
-      case '50k-80k':
-        return stipendValue >= 50000 && stipendValue <= 80000;
-      case '80k+':
-        return stipendValue >= 80000;
-      default:
-        return true;
-    }
-  };
-
-  function parseDuration(durationStr) {
-
-    const match = durationStr.match(/(\d+)\s*(\w+)/);
-    if (!match) return null; 
-
-    const value = parseInt(match[1], 10); 
-    const unit = match[2].toLowerCase();
-
-    // Convert the value to days
-    switch (unit) {
-        case 'month':
-        case 'months':
-            return value * 30; 
-        case 'week':
-        case 'weeks':
-            return value * 7; 
-        case 'day':
-        case 'days':
-            return value;
-        case 'year':
-        case 'years':
-            return value * 365;
-        default:
-            throw new Error(`Unknown duration unit: ${unit}`);
-    }
-}
-
-
-  const checkDuration = (duration, range) =>{
-    const ParsedDurationValue = parseDuration(duration);
-    switch(range){
-      case '3 months':
-        return ParsedDurationValue <= 90;
-      case '6 months':
-        return ParsedDurationValue <= 180;
-      default:
-        return true;
-    }
-  }
-
-  // Filter internships based on selected filters
-  const filteredInternships = internships
-    .filter((internship) => {
-      return (
-        (filterBy.department === 'all' || internship.department.toLowerCase() === filterBy.department) &&
-        (filterBy.location === 'all' || internship.location.toLowerCase() === filterBy.location) &&
-        (filterBy.type === 'all' || internship.type.toLowerCase() === filterBy.type) &&
-        (filterBy.stipendRange === 'all' || checkStipendRange(internship.stipend, filterBy.stipendRange)) &&
-        (filterBy.duration === 'all' || checkDuration(internship.duration,filterBy.duration)) &&
-        (searchQuery === '' || internship.role.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    })
-    .sort((a, b) => {
-      if (sortBy === 'newest') {
-        return new Date(b.posted) - new Date(a.posted);
-      } else if (sortBy === 'oldest') {
-        return new Date(a.posted) - new Date(b.posted);
-      } else if (sortBy === 'stipendHighToLow') {
-        return parseStipend(b.stipend) - parseStipend(a.stipend);
-      } else if (sortBy === 'stipendLowToHigh') {
-        return parseStipend(a.stipend) - parseStipend(b.stipend);
-      } else if (sortBy === 'deadline') {
-        return new Date(a.deadline) - new Date(b.deadline);
-      }
-      return 0;
-    });
-
   // Handle card click to open the modal
   const handleCardClick = (internship) => {
     const formattedInternship = {
@@ -146,7 +61,6 @@ const Opportunities = () => {
     setSelectedInternship(formattedInternship);
   };
 
-  // Close the modal
   const handleCloseModal = () => {
     setSelectedInternship(null);
   };
@@ -215,7 +129,7 @@ const Opportunities = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={styles.searchInput}
                 />
-            +</div>
+            </div>
 
             <div className={styles.filterGroup}>
               <label>SORT BY:</label>
@@ -232,8 +146,8 @@ const Opportunities = () => {
           </div>
 
           <div className={styles.listContainer}>
-            {filteredInternships.map((internship) => (
-              <div key={internship.id} className={styles.listItem} onClick={() => handleCardClick(internship)}>
+            {internships.map((internship) => (
+              <div key={internship._id} className={styles.listItem} onClick={() => handleCardClick(internship)}>
                 <div className={styles.listContent}>
                   <h2>{internship.role}</h2>
                   <div className={styles.details}>
@@ -246,7 +160,13 @@ const Opportunities = () => {
                     <span>{internship.type}</span>
                   </div>
                 </div>
-                <div className={styles.applyButton}>APPLY NOW →</div>
+                {isLoggedIn ? (
+                  <button className={styles.applyButton}>
+                    APPLY NOW →
+                  </button>
+                ) : (
+                  <Link to='/login' className={styles.applyButton}>APPLY NOW →</Link>
+                )}
               </div>
             ))}
           </div>
