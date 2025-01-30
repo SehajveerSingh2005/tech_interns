@@ -161,7 +161,31 @@ const Opportunities = () => {
                   </div>
                 </div>
                 {isLoggedIn ? (
-                  <button className={styles.applyButton}>
+                  <button 
+                    className={styles.applyButton}
+                    onClick={async (e) => {
+                      e.stopPropagation(); // Prevent modal from opening
+                      try {
+                        const token = localStorage.getItem('authToken');
+                        await axios.post(
+                          `http://localhost:5000/api/users/apply/${internship._id}`, // Updated endpoint
+                          {},
+                          {
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
+                          }
+                        );
+                        alert('Successfully applied for the internship!');
+                      } catch (error) {
+                        if (error.response?.status === 400) {
+                          alert('You have already applied for this internship');
+                        } else {
+                          alert('Error applying for internship. Please try again.');
+                        }
+                      }
+                    }}
+                  >
                     APPLY NOW →
                   </button>
                 ) : (
