@@ -1,0 +1,29 @@
+.container {
+    position: relative;
+    padding-top: 100px;
+    min-height: 100vh;
+    background: #fff;
+    font-family: monospace;
+  }
+  
+  .grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
