@@ -6,9 +6,8 @@ import Navbar from '../../components/navbar/navbar';
 import OpportunityModal from '../../components/home/OpportunityModal';
 import { AuthContext } from '../../context/AuthContext';
 
-
 const Opportunities = () => {
-  const { isLoggedIn } = useContext(AuthContext); // user should be accessible to identify the applicant
+  const { isLoggedIn } = useContext(AuthContext);
   
   const [sortBy, setSortBy] = useState('newest');
   const [filterBy, setFilterBy] = useState({
@@ -21,8 +20,8 @@ const Opportunities = () => {
   const [searchQuery, setSearchQuery] = useState(''); //search query
   const [selectedInternship, setSelectedInternship] = useState(null);
   const [internships, setInternships] = useState([]); // Initialize as an empty array
+  const [appliedOffers, setAppliedOffers] = useState([]); // Track applied offers
   const [loading, setLoading] = useState(true); // Track loading state
-
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -48,8 +47,25 @@ const Opportunities = () => {
       }
     };
 
+    const fetchAppliedOffers = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:5000/api/users/applied', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAppliedOffers(response.data.map(offer => offer._id));
+      } catch (error) {
+        console.error('Error fetching applied offers:', error);
+      }
+    };
+
     fetchInternships();
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+    if (isLoggedIn) {
+      fetchAppliedOffers();
+    }
+  }, [isLoggedIn]); // Fetch applied offers if user is logged in
 
   // Handle card click to open the modal
   const handleCardClick = (internship) => {
@@ -64,6 +80,36 @@ const Opportunities = () => {
   const handleCloseModal = () => {
     setSelectedInternship(null);
   };
+
+  // Filter and search logic
+  const filteredInternships = internships
+    .filter((internship) => {
+      return (
+        (filterBy.department === 'all' || internship.department.toLowerCase() === filterBy.department) &&
+        (filterBy.location === 'all' || internship.location.toLowerCase().includes(filterBy.location.toLowerCase())) &&
+        (filterBy.type === 'all' || internship.type.toLowerCase() === filterBy.type) &&
+        (filterBy.duration === 'all' || internship.duration.toLowerCase() === filterBy.duration) &&
+        (searchQuery === '' || 
+          internship.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          internship.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          internship.department.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === 'newest') {
+        return new Date(b.posted) - new Date(a.posted);
+      } else if (sortBy === 'oldest') {
+        return new Date(a.posted) - new Date(b.posted);
+      } else if (sortBy === 'stipendHighToLow') {
+        return parseInt(b.stipend.replace(/\D/g, '')) - parseInt(a.stipend.replace(/\D/g, ''));
+      } else if (sortBy === 'stipendLowToHigh') {
+        return parseInt(a.stipend.replace(/\D/g, '')) - parseInt(b.stipend.replace(/\D/g, ''));
+      } else if (sortBy === 'deadline') {
+        return new Date(a.deadline) - new Date(b.deadline);
+      }
+      return 0;
+    });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -124,7 +170,7 @@ const Opportunities = () => {
             <div className={styles.searchGroup}>
                 <input
                   type="text"
-                  placeholder="Search companies..."
+                  placeholder="Search opportunites..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={styles.searchInput}
@@ -146,7 +192,7 @@ const Opportunities = () => {
           </div>
 
           <div className={styles.listContainer}>
-            {internships.map((internship) => (
+            {filteredInternships.map((internship) => (
               <div key={internship._id} className={styles.listItem} onClick={() => handleCardClick(internship)}>
                 <div className={styles.listContent}>
                   <h2>{internship.role}</h2>
@@ -161,33 +207,40 @@ const Opportunities = () => {
                   </div>
                 </div>
                 {isLoggedIn ? (
-                  <button 
-                    className={styles.applyButton}
-                    onClick={async (e) => {
-                      e.stopPropagation(); // Prevent modal from opening
-                      try {
-                        const token = localStorage.getItem('authToken');
-                        await axios.post(
-                          `http://localhost:5000/api/users/apply/${internship._id}`, // Updated endpoint
-                          {},
-                          {
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                            },
+                  appliedOffers.includes(internship._id) ? (
+                    <button className={`${styles.applyButton} ${styles.appliedButton}`} disabled>
+                      APPLIED
+                    </button>
+                  ) : (
+                    <button 
+                      className={styles.applyButton}
+                      onClick={async (e) => {
+                        e.stopPropagation(); // Prevent modal from opening
+                        try {
+                          const token = localStorage.getItem('authToken');
+                          await axios.post(
+                            `http://localhost:5000/api/users/apply/${internship._id}`, // Updated endpoint
+                            {},
+                            {
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                              },
+                            }
+                          );
+                          alert('Successfully applied for the internship!');
+                          setAppliedOffers([...appliedOffers, internship._id]); // Update applied offers
+                        } catch (error) {
+                          if (error.response?.status === 400) {
+                            alert('You have already applied for this internship');
+                          } else {
+                            alert('Error applying for internship. Please try again.');
                           }
-                        );
-                        alert('Successfully applied for the internship!');
-                      } catch (error) {
-                        if (error.response?.status === 400) {
-                          alert('You have already applied for this internship');
-                        } else {
-                          alert('Error applying for internship. Please try again.');
                         }
-                      }
-                    }}
-                  >
-                    APPLY NOW →
-                  </button>
+                      }}
+                    >
+                      APPLY NOW →
+                    </button>
+                  )
                 ) : (
                   <Link to='/login' className={styles.applyButton}>APPLY NOW →</Link>
                 )}

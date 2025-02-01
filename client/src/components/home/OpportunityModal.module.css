@@ -100,6 +100,17 @@
     color: #000;
   }
 
+  .appliedButton {
+    background: #ccc;
+    color: #666;
+    cursor: not-allowed;
+  }
+
+  .appliedButton:hover {
+    background: #ccc;
+    color: #666;
+  }
+
   .modalSection {
     margin-bottom: 24px;
   }

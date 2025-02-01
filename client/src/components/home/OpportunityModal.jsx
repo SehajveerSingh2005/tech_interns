@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
@@ -7,6 +7,29 @@ import styles from './OpportunityModal.module.css';
 const OpportunityModal = ({ internship, onClose }) => {
   const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [applied, setApplied] = useState(false);
+
+  useEffect(() => {
+    const checkIfApplied = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:5000/api/users/applied', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Applied response:', response.data);
+        const appliedOffers = response.data.map(offer => offer._id);
+        setApplied(appliedOffers.includes(internship._id));
+      } catch (error) {
+        console.error('Error checking if applied:', error);
+      }
+    };
+
+    if (isLoggedIn) {
+      checkIfApplied();
+    }
+  }, [isLoggedIn, internship._id]);
 
   const handleApply = async () => {
     if (!isLoggedIn) {
@@ -16,7 +39,7 @@ const OpportunityModal = ({ internship, onClose }) => {
 
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.post(
+      await axios.post(
         `http://localhost:5000/api/users/apply/${internship._id}`,
         {},
         {
@@ -26,7 +49,7 @@ const OpportunityModal = ({ internship, onClose }) => {
         }
       );
       alert('Successfully applied for the internship!');
-      onClose();
+      setApplied(true);
     } catch (error) {
       if (error.response?.status === 400) {
         alert('You have already applied for this internship');
@@ -75,9 +98,21 @@ const OpportunityModal = ({ internship, onClose }) => {
           <button className={styles.closeButton} onClick={onClose}>
             CLOSE
           </button>
-          <button className={styles.applyButton} onClick={handleApply}>
-            APPLY NOW →
-          </button>
+          {isLoggedIn ? (
+            applied ? (
+              <button className={`${styles.applyButton} ${styles.appliedButton}`} disabled>
+                APPLIED
+              </button>
+            ) : (
+              <button className={styles.applyButton} onClick={handleApply}>
+                APPLY NOW →
+              </button>
+            )
+          ) : (
+            <button className={styles.applyButton} onClick={() => navigate('/login')}>
+              APPLY NOW →
+            </button>
+          )}
         </div>
       </div>
     </div>

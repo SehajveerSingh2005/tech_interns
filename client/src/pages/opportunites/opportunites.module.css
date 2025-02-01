@@ -268,6 +268,17 @@
   color: #fff;
 }
 
+.appliedButton {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.appliedButton:hover {
+  background: #ccc;
+  color: #666;
+}
+
 @media screen and (max-width: 768px) {
   .controls {
     flex-direction: column;
