@@ -98,12 +98,12 @@ const Home = () => {
             </div>
 
             <div className={styles.rightSection}>
-              <a href="/opportunities" className={styles.exploreCard}>
+              <Link to='/opportunities' className={styles.exploreCard}>
                 <div className={styles.cardContent}>
                   <span>Explore Opportunities</span>
                   <span className={styles.cardArrow}>→</span>
                 </div>
-              </a>
+              </Link>
 
               <div className={styles.statsPreview}>
                 <div className={styles.statItem}>

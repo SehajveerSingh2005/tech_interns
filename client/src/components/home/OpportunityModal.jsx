@@ -58,6 +58,15 @@ const OpportunityModal = ({ internship, onClose }) => {
       }
       console.error('Application error:', error);
     }
+
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Ensures 2 digits
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
   };
 
   return (
@@ -73,7 +82,7 @@ const OpportunityModal = ({ internship, onClose }) => {
           <span>•</span>
           <span>{internship.type}</span>
         </div>
-        <p className={styles.postedDate}>Posted on: {internship.posted}</p>
+        <p className={styles.postedDate}>Posted on: {formatDate(internship.posted)}</p>
         <div className={styles.modalSection}>
           <h3>Description</h3>
           <p>{internship.description}</p>
@@ -92,7 +101,7 @@ const OpportunityModal = ({ internship, onClose }) => {
         </div>
         <div className={styles.modalSection}>
           <h3>Application Deadline</h3>
-          <p>{internship.deadline}</p>
+          <p>{formatDate(internship.deadline)}</p>
         </div>
         <div className={styles.modalActions}>
           <button className={styles.closeButton} onClick={onClose}>

@@ -169,48 +169,6 @@
     transform: translateY(-5px);
     transition: transform 0.3s ease;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 1200px) {
-    .headline, .headlineOutline {
-      font-size: 6rem;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .hero {
-      padding: 4rem 1.5rem;
-    }
-  
-    .headline, .headlineOutline {
-      font-size: 3.5rem;
-      letter-spacing: -2px;
-    }
-  
-    .heroContent {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2rem;
-    }
-  
-    .subheadline {
-      font-size: 1.5rem;
-    }
-  
-    .statGrid {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-  
-    .cta {
-      margin-right: 0;
-      width: 100%;
-    }
-  
-    .primaryBtn {
-      width: 100%;
-    }
-  }
 
   .exploreCard {
     background: #fff;
@@ -379,6 +337,73 @@
   
   .showMoreButton:hover .buttonArrow {
     transform: translateX(5px);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .headline, .headlineOutline {
+      font-size: 6rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    
+    .hero {
+      padding: 4rem 1.5rem;
+    }
+
+    .heroContent {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      gap: 1.5rem;
+    }
+  
+    .headline, .headlineOutline {
+      font-size: 3.5rem;
+      letter-spacing: -2px;
+    }
+  
+    .subheadline {
+      text-align: justify;
+      font-size: 1.5rem;
+      max-width: 100%;
+    }
+
+    .rightSection {
+      border: 2px solid #000;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .statsPreview {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      border-top: 2px solid #000;
+      padding-top: 32px;
+      margin-top: auto;
+    }
+  
+    .statGrid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  
+    .cta {
+      margin-right: 0;
+      width: 100%;
+    }
+  
+    .primaryBtn {
+      width: 100%;
+    }
+
+    .featuredSection {
+      margin-top: 64px;
+    }
   }
 
   @media (max-width: 1200px) {

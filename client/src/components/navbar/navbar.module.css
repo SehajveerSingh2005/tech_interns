@@ -48,3 +48,13 @@ body, html {
   text-decoration: none;
   color: inherit;
 }
+
+@media screen and (max-width: 768px) {
+  .nav {
+    padding: 2rem;
+  }
+
+  .navRight {
+    display: none;
+  }
+}
