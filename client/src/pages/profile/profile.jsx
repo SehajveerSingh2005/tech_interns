@@ -9,6 +9,9 @@ const Profile = () => {
   const { firstName } = useContext(AuthContext);
   const [appliedOffers, setAppliedOffers] = useState([]);
   const [selectedOffer, setSelectedOffer] = useState(null);
+  const [sortBy, setSortBy] = useState('newest');
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     const fetchAppliedOffers = async () => {
@@ -36,6 +39,36 @@ const Profile = () => {
     setSelectedOffer(null);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredOffers = appliedOffers
+  .filter((offer) => {
+    return (
+      (searchQuery === ' ' ||
+      offer.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      offer.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      offer.location.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  })
+  .sort((a, b) => {
+    if (sortBy === 'newest') {
+      return new Date(b.posted) - new Date(a.posted);
+    } else if (sortBy === 'oldest') {
+      return new Date(a.posted) - new Date(b.posted);
+    } else if (sortBy === 'stipendHighToLow') {
+      return parseInt(b.stipend.replace(/\D/g, '')) - parseInt(a.stipend.replace(/\D/g, ''));
+    } else if (sortBy === 'stipendLowToHigh') {
+      return parseInt(a.stipend.replace(/\D/g, '')) - parseInt(b.stipend.replace(/\D/g, ''));
+    } else if (sortBy === 'deadline') {
+      return new Date(a.deadline) - new Date(b.deadline);
+    }
+    return 0;
+  });
+  
+
   return (
     <>
       <Navbar />
@@ -48,9 +81,29 @@ const Profile = () => {
           </div>
           <div className={styles.rightContent}>
             <h2 className={styles.sectionHeader}>Applied Offers</h2>
+            <div className={styles.searchBar}>
+              <input className={styles.searchInput}
+                type="text"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <div className={styles.filterGroup}>
+                <label>SORT BY:</label>
+                <div className={styles.selectWrapper}>
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className={styles.select}>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="stipendHighToLow">Stipend (High to Low)</option>
+                    <option value="stipendLowToHigh">Stipend (Low to High)</option>
+                    <option value="deadline">Deadline</option>
+                  </select>
+                 </div>
+                </div>
+            </div>
             <div className={styles.cardGrid}>
               {appliedOffers.length > 0 ? (
-                appliedOffers.map((offer) => (
+                filteredOffers.map((offer) => (
                   <div key={offer._id} className={styles.opportunityCard} onClick={() => handleCardClick(offer)}>
                     <div className={styles.cardTop}>
                       <h3>{offer.role}</h3>
