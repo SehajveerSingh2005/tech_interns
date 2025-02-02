@@ -34,7 +34,7 @@ const SignupForm = () => {
     const payload = { firstname, lastname, email, password };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', payload);
+      const response = await axios.post('https://tech-interns.onrender.com/api/auth/signup', payload);
       alert(response.data.message || 'Signup successful!'); // Display backend response message
     } catch (error) {
       console.error('Error signing up:', error.response?.data || error);

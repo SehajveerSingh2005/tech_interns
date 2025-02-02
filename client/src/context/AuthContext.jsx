@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
 
   const fetchUserFirstName = async (token) => {
     try {
-      const response = await axios.get('http://localhost:5000/api/auth/firstname', {
+      const response = await axios.get('https://tech-interns.onrender.com/api/auth/firstname', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

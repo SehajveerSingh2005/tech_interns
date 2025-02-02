@@ -21,7 +21,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post('https://tech-interns.onrender.com/api/auth/login', formData);
       alert(response.data.message || 'Login successful!');
 
       if (response.data.token) {

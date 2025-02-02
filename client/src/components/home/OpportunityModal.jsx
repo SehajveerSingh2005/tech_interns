@@ -40,7 +40,7 @@ const OpportunityModal = ({ internship, onClose }) => {
     try {
       const token = localStorage.getItem('authToken');
       await axios.post(
-        `http://localhost:5000/api/users/apply/${internship._id}`,
+        `https://tech-interns.onrender.com/api/users/apply/${internship._id}`,
         {},
         {
           headers: {

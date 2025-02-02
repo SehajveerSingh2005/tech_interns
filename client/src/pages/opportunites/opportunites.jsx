@@ -50,7 +50,7 @@ const Opportunities = () => {
     const fetchAppliedOffers = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('http://localhost:5000/api/users/applied', {
+        const response = await axios.get(`https://tech-interns.onrender.com/api/users/applied`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
