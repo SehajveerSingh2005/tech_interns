@@ -12,7 +12,13 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'https://tech-interns.onrender.com', 
+    methods: ['GET', 'POST'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+  }
+));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
