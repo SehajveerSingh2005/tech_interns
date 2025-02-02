@@ -34,7 +34,7 @@ const Opportunities = () => {
   useEffect(() => {
     const fetchInternships = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/offers'); 
+        const response = await axios.get('https://tech-interns.onrender.com/api/offers'); 
         if (Array.isArray(response.data)) {
           setInternships(response.data); 
         } else {
@@ -219,7 +219,7 @@ const Opportunities = () => {
                         try {
                           const token = localStorage.getItem('authToken');
                           await axios.post(
-                            `http://localhost:5000/api/users/apply/${internship._id}`, // Updated endpoint
+                            `https://tech-interns.onrender.com/api/users/apply/${internship._id}`,
                             {},
                             {
                               headers: {
@@ -228,7 +228,7 @@ const Opportunities = () => {
                             }
                           );
                           alert('Successfully applied for the internship!');
-                          setAppliedOffers([...appliedOffers, internship._id]); // Update applied offers
+                          setAppliedOffers([...appliedOffers, internship._id]);
                         } catch (error) {
                           if (error.response?.status === 400) {
                             alert('You have already applied for this internship');
