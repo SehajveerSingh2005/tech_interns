@@ -10,7 +10,6 @@ import Companies from './pages/companies/companies';
 import Profile from './pages/profile/profile';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
