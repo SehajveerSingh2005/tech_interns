@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import styles from './profile.module.css';
 import Navbar from '../../components/navbar/navbar';
 import { AuthContext } from '../../context/AuthContext';
@@ -17,7 +18,7 @@ const Profile = () => {
     const fetchAppliedOffers = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('https://tech-interns.onrender.com/api/users/applied', {
+        const response = await axios.get(`${API_BASE_URL}/api/users/applied`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

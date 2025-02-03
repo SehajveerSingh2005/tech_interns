@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import art from '../../assets/office.jpg';
 import style from './loginform.module.css';
 
@@ -21,7 +22,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://tech-interns.onrender.com/api/auth/login', formData);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, formData);
       alert(response.data.message || 'Login successful!');
 
       if (response.data.token) {

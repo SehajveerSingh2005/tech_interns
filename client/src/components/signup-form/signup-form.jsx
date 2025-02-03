@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import art from '../../assets/multiple_pcs.jpg';
 import style from './signupform.module.css';
 
@@ -34,7 +35,7 @@ const SignupForm = () => {
     const payload = { firstname, lastname, email, password };
 
     try {
-      const response = await axios.post('https://tech-interns.onrender.com/api/auth/signup', payload);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, payload);
       alert(response.data.message || 'Signup successful!'); // Display backend response message
     } catch (error) {
       console.error('Error signing up:', error.response?.data || error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import styles from './opportunites.module.css';
 import Navbar from '../../components/navbar/navbar';
 import OpportunityModal from '../../components/home/OpportunityModal';
@@ -34,7 +35,7 @@ const Opportunities = () => {
   useEffect(() => {
     const fetchInternships = async () => {
       try {
-        const response = await axios.get('https://tech-interns.onrender.com/api/offers'); 
+        const response = await axios.get(`${API_BASE_URL}/api/offers`); 
         if (Array.isArray(response.data)) {
           setInternships(response.data); 
         } else {
@@ -50,7 +51,7 @@ const Opportunities = () => {
     const fetchAppliedOffers = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get(`https://tech-interns.onrender.com/api/users/applied`, {
+        const response = await axios.get(`${API_BASE_URL}/api/users/applied`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -219,7 +220,7 @@ const Opportunities = () => {
                         try {
                           const token = localStorage.getItem('authToken');
                           await axios.post(
-                            `https://tech-interns.onrender.com/api/users/apply/${internship._id}`,
+                            `${API_BASE_URL}/api/users/apply/${internship._id}`,
                             {},
                             {
                               headers: {

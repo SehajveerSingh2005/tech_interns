@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { AuthContext } from '../../context/AuthContext';
 import styles from './OpportunityModal.module.css';
 
@@ -13,7 +14,7 @@ const OpportunityModal = ({ internship, onClose }) => {
     const checkIfApplied = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('http://localhost:5000/api/users/applied', {
+        const response = await axios.get(`${API_BASE_URL}/api/users/applied`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -40,7 +41,7 @@ const OpportunityModal = ({ internship, onClose }) => {
     try {
       const token = localStorage.getItem('authToken');
       await axios.post(
-        `https://tech-interns.onrender.com/api/users/apply/${internship._id}`,
+        `${API_BASE_URL}/api/users/apply/${internship._id}`,
         {},
         {
           headers: {

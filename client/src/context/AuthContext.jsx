@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const AuthContext = createContext();
 
@@ -17,7 +18,7 @@ const AuthProvider = ({ children }) => {
 
   const fetchUserFirstName = async (token) => {
     try {
-      const response = await axios.get('https://tech-interns.onrender.com/api/auth/firstname', {
+      const response = await axios.get(`${API_BASE_URL}/api/auth/firstname`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
