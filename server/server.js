@@ -14,9 +14,8 @@ const app = express();
 
 app.use(cors(
   {
-    origin: 'https://tech-interns.onrender.com', 
-    methods: ['GET', 'POST'], 
-    allowedHeaders: ['Content-Type', 'Authorization'], 
+    origin: 'https://tech-interns.vercel.app', 
+    credentials: true
   }
 ));
 app.use(express.json());
