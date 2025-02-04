@@ -83,7 +83,7 @@ const OpportunityModal = ({ internship, onClose }) => {
           <span>•</span>
           <span>{internship.type}</span>
         </div>
-        <p className={styles.postedDate}>Posted on: {formatDate(internship.posted)}</p>
+        <p className={styles.postedDate}>Posted on: {internship.posted}</p>
         <div className={styles.modalSection}>
           <h3>Description</h3>
           <p>{internship.description}</p>
@@ -102,7 +102,7 @@ const OpportunityModal = ({ internship, onClose }) => {
         </div>
         <div className={styles.modalSection}>
           <h3>Application Deadline</h3>
-          <p>{formatDate(internship.deadline)}</p>
+          <p>{internship.deadline}</p>
         </div>
         <div className={styles.modalActions}>
           <button className={styles.closeButton} onClick={onClose}>

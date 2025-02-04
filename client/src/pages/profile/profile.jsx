@@ -32,8 +32,21 @@ const Profile = () => {
     fetchAppliedOffers();
   }, []);
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Ensures 2 digits
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   const handleCardClick = (offer) => {
-    setSelectedOffer(offer);
+    const formattedOffer = {
+      ...offer,
+      posted: formatDate(offer.posted),
+      deadline: formatDate(offer.deadline),
+    };
+    setSelectedOffer(formattedOffer);
   };
 
   const handleCloseModal = () => {
