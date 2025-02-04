@@ -1,82 +1,74 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { Link } from 'react-router-dom';
 import styles from './home.module.css';
 import Navbar from '../../components/navbar/navbar';
+import OpportunityModal from '../../components/home/OpportunityModal';
+import { AuthContext } from '../../context/AuthContext';
 
 const Home = () => {
-  // Reuse the internships data from the Opportunities component
-  const internships = [
-    {
-      id: 1,
-      role: 'SOFTWARE ENGINEERING INTERN',
-      company: 'Microsoft',
-      department: 'Engineering',
-      location: 'Bangalore',
-      type: 'Full-time',
-      posted: '15-12-2024',
-      description: 'Work on cutting-edge software projects and collaborate with a global team.',
-      requirements: 'Proficiency in Python, Java, or C++. Familiarity with cloud platforms.',
-      duration: '6 months',
-      stipend: '₹50,000/month',
-      deadline: '15-04-2025',
-    },
-    {
-      id: 2,
-      role: 'UI/UX DESIGN INTERN',
-      company: 'Google',
-      department: 'Design',
-      location: 'Remote',
-      type: 'Part-time',
-      posted: '14-12-2024',
-      description: 'Design intuitive user interfaces for web and mobile applications.',
-      requirements: 'Experience with Figma or Sketch. Understanding of user-centered design.',
-      duration: '3 months',
-      stipend: '₹30,000/month',
-      deadline: '10-04-2025',
-    },
-    {
-      id: 3,
-      role: 'DATA SCIENCE INTERN',
-      company: 'Amazon',
-      department: 'Engineering',
-      location: 'Hyderabad',
-      type: 'Full-time',
-      posted: '13-12-2024',
-      description: 'Analyze large datasets and build predictive models using machine learning.',
-      requirements: 'Knowledge of Python, SQL, and machine learning frameworks.',
-      duration: '6 months',
-      stipend: '₹55,000/month',
-      deadline: '12-04-2025',
-    },
-    {
-      id: 4,
-      role: 'FRONTEND ENGINEERING INTERN',
-      company: 'Flightnet',
-      department: 'Engineering',
-      location: 'Mumbai',
-      type: 'Full-time',
-      posted: '12-12-2024',
-      description: 'Develop responsive and user-friendly web interfaces.',
-      requirements: 'Proficiency in HTML, CSS, JavaScript, and React.',
-      duration: '6 months',
-      stipend: '₹45,000/month',
-      deadline: '08-04-2025',
-    },
-    {
-      id: 5,
-      role: 'PRODUCT DESIGN INTERN',
-      company: 'Adobe',
-      department: 'Design',
-      location: 'Pune',
-      type: 'Full-time',
-      posted: '11-12-2024',
-      description: 'Collaborate on designing innovative digital products.',
-      requirements: 'Experience with design tools like Adobe XD or Figma.',
-      duration: '6 months',
-      stipend: '₹40,000/month',
-      deadline: '05-04-2025',
-    },
-  ];
+  const { isLoggedIn } = useContext(AuthContext);
+
+  const [selectedInternship, setSelectedInternship] = useState(null);
+  const [internships, setInternships] = useState([]); // Initialize as an empty array
+  const [appliedOffers, setAppliedOffers] = useState([]); // Track applied offers
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0'); // Ensures 2 digits
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  useEffect(() => {
+    const fetchInternships = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/offers`); 
+        if (Array.isArray(response.data)) {
+          setInternships(response.data); 
+        } else {
+          console.error('Fetched data is not an array!');
+        }
+      } catch (error) {
+        console.error('Error fetching internships:', error);
+      }
+    };
+
+    const fetchAppliedOffers = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const response = await axios.get(`${API_BASE_URL}/api/users/applied`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAppliedOffers(response.data.map(offer => offer._id));
+      } catch (error) {
+        console.error('Error fetching applied offers:', error);
+      }
+    };
+
+    fetchInternships();
+    if (isLoggedIn) {
+      fetchAppliedOffers();
+    }
+  }, [isLoggedIn]); // Fetch applied offers if user is logged in
+
+  // Handle card click to open the modal
+  const handleCardClick = (internship) => {
+    const formattedInternship = {
+      ...internship,
+      posted: formatDate(internship.posted),
+      deadline: formatDate(internship.deadline),
+    };
+    setSelectedInternship(formattedInternship);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedInternship(null);
+  };
 
   // Select the first 4 internships as featured opportunities
   const featuredOpportunities = internships.slice(0, 4);
@@ -126,12 +118,9 @@ const Home = () => {
 
             <div className={styles.cardGrid}>
               {featuredOpportunities.map((internship) => (
-                <div key={internship.id} className={styles.opportunityCard}>
+                <div key={internship._id} className={styles.opportunityCard} onClick={() => handleCardClick(internship)}>
                   <div className={styles.cardTop}>
-                    <img
-                      src={`/${internship.company.toLowerCase()}-logo.svg`}
-                      alt={internship.company}
-                    />
+                    <span>{internship.company}</span>
                     <span className={styles.tag}>{internship.department}</span>
                   </div>
                   <h3>{internship.role}</h3>
@@ -151,6 +140,10 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {selectedInternship && (
+        <OpportunityModal internship={selectedInternship} onClose={handleCloseModal} />
+      )}
     </>
   );
 };
