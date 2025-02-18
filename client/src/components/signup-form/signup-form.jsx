@@ -25,7 +25,6 @@ const SignupForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     if (!formData.agreedToTerms) {
       alert('Please agree to the terms and conditions before signing up.');
       return;
@@ -36,7 +35,13 @@ const SignupForm = () => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/auth/signup`, payload);
-      alert(response.data.message || 'Signup successful!'); // Display backend response message
+      alert(response.data.message || 'Signup successful!');
+      
+      // Store the token and redirect to home page
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('Error signing up:', error.response?.data || error);
       alert(error.response?.data?.message || 'Failed to sign up');
